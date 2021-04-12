@@ -16,12 +16,16 @@ class UsersService implements CRUD {
     return UsersDao.getUserById(id);
   }
 
-  async getAll() {
+  async getAll(limit: number, page: number) {
     return UsersDao.getAllUsers();
   }
 
   async getUserByEmail(email: string) {
     return UsersDao.getUserByEmail(email);
+  }
+
+  async getUserByEmailAddPassword(email: string) {
+    return UsersDao.getUserByEmailAddPassword(email);
   }
 }
 

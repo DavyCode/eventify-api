@@ -1,40 +1,31 @@
 import express from 'express';
-import usersService from '../services/user.services';
 import argon2 from 'argon2';
+import usersService from '../services/user.services';
 import debug from 'debug';
 
 const log: debug.IDebugger = debug('app:users-controller');
 
 class UsersController {
-  async listUsers(req: express.Request, res: express.Response) {
-    const users = await usersService.getAll();
-    res.status(200).send(users);
+  async getAllUsers(req: express.Request, res: express.Response) {
+    const users = await usersService.getAll(10, 0);
+    res.status(200).send({ status: 'success', data: users });
   }
 
   async getUserById(req: express.Request, res: express.Response) {
     const user = await usersService.getById(req.params.userId);
-    res.status(200).send(user);
+    res.status(200).send({ status: 'success', data: user});
   }
 
   async createUser(req: express.Request, res: express.Response) {
     req.body.password = await argon2.hash(req.body.password);
-    const userId = await usersService.create(req.body);
-    res.status(201).send({ id: userId });
-  }
-
-  async loginUser(req: express.Request, res: express.Response) {
-    res.status(201).send({ id: 13 });
+    const user = await usersService.create(req.body);
+    res.status(201).send({ status: 'success', data: user });
   }
 
   async put(req: express.Request, res: express.Response) {
-    req.body.password = await argon2.hash(req.body.password);
-    log(
-        await usersService.putById(req.params.userId, {
-            id: req.params.userId,
-            ...req.body,
-        })
-    );
-    res.status(204).send();
+    req.body.password = await argon2.hash(req.body.newPassword);
+    const updatedUser = await usersService.putById(req.params.userId, req.body);
+    res.status(201).send({ status: 'success', data: updatedUser });
   }
 }
 

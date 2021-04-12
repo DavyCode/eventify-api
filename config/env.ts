@@ -7,4 +7,6 @@ export const {
   PORT,
   JWT_SECRET,
   JWT_EXPIRATION_MINUTES,
+  DBURL,
+  JWT_BEARER
 } = process.env;
